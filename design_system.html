@@ -1,0 +1,3566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIIA — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Cormorant+SC:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================
+       PIIA — DESIGN SYSTEM
+       Hand-woven Rug Studio
+       ========================================================= */
+
+    /* ---------------------------------------------------------
+       DESIGN TOKENS
+       --------------------------------------------------------- */
+    :root {
+      /* Color palette */
+      --linen:       #EDE8DF;   /* base background */
+      --wool:        #F7F3EE;   /* light surface */
+      --raw:         #FAF8F5;   /* lightest surface */
+      --bark:        #1C1814;   /* primary text */
+      --bark-60:     rgba(28, 24, 20, 0.60);
+      --bark-30:     rgba(28, 24, 20, 0.30);
+      --bark-12:     rgba(28, 24, 20, 0.12);
+      --sienna:      #7D5038;   /* primary accent */
+      --sienna-light:#A8724E;   /* accent hover */
+      --camel:       #C4A882;   /* warm mid */
+      --clay:        #D4BFA0;   /* lighter warm */
+      --ash:         #9B9289;   /* muted text */
+
+      /* Typography */
+      --font-display: 'Cormorant Garant', Georgia, serif;
+      --font-sc:      'Cormorant SC', Georgia, serif;
+      --font-body:    'Outfit', system-ui, sans-serif;
+
+      /* Type scale */
+      --text-xs:    0.6875rem;  /* 11px — label, caption */
+      --text-sm:    0.8125rem;  /* 13px — meta, tag */
+      --text-base:  1rem;       /* 16px — body */
+      --text-lg:    1.1875rem;  /* 19px — lead */
+      --text-xl:    1.5rem;     /* 24px — h4 */
+      --text-2xl:   2rem;       /* 32px — h3 */
+      --text-3xl:   2.75rem;    /* 44px — h2 */
+      --text-4xl:   3.875rem;   /* 62px — h1 */
+      --text-5xl:   5.5rem;     /* 88px — display sm */
+      --text-6xl:   8rem;       /* 128px — display md */
+      --text-hero:  clamp(5.5rem, 13vw, 11.25rem); /* display lg */
+
+      /* Spacing — warp & weft grid */
+      --sp-1:   0.25rem;
+      --sp-2:   0.5rem;
+      --sp-3:   0.75rem;
+      --sp-4:   1rem;
+      --sp-6:   1.5rem;
+      --sp-8:   2rem;
+      --sp-12:  3rem;
+      --sp-16:  4rem;
+      --sp-24:  6rem;
+      --sp-32:  8rem;
+      --sp-48:  12rem;
+      --sp-64:  16rem;
+
+      /* Grid */
+      --grid-cols: 12;
+      --grid-gap:  clamp(1rem, 2vw, 1.5rem);
+      --page-max:  1440px;
+      --page-pad:  clamp(1.5rem, 5vw, 5rem);
+
+      /* Transitions */
+      --ease-out:  cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-in:   cubic-bezier(0.64, 0, 0.78, 0);
+      --ease-circ: cubic-bezier(0.0, 0.0, 0.2, 1.0);
+      --dur-fast:  0.25s;
+      --dur-med:   0.55s;
+      --dur-slow:  0.9s;
+
+      /* Borders */
+      --rule: 1px solid var(--bark-12);
+    }
+
+    /* ---------------------------------------------------------
+       RESET & BASE
+       --------------------------------------------------------- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      background: var(--linen);
+      color: var(--bark);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* Grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    /* ---------------------------------------------------------
+       DS LAYOUT HELPERS
+       --------------------------------------------------------- */
+    .ds-page {
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 0 var(--page-pad);
+    }
+
+    .ds-section {
+      padding: var(--sp-32) 0;
+      border-top: var(--rule);
+    }
+
+    .ds-section:first-child { border-top: none; }
+
+    .ds-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--grid-gap);
+    }
+
+    .ds-label {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ash);
+      display: block;
+      margin-bottom: var(--sp-8);
+    }
+
+    .ds-meta {
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--ash);
+      margin-top: var(--sp-2);
+    }
+
+    /* =========================================================
+       COVER — Brand identity
+       ========================================================= */
+    .cover {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: var(--sp-6) var(--page-pad);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-top: var(--sp-2);
+    }
+
+    .cover-top-label {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ash);
+    }
+
+    .cover-wordmark {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: var(--sp-16) 0 var(--sp-8);
+      position: relative;
+    }
+
+    .cover-name {
+      font-family: var(--font-display);
+      font-size: var(--text-hero);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      line-height: 0.88;
+      color: var(--bark);
+      position: relative;
+      z-index: 2;
+    }
+
+    .cover-name em {
+      font-style: italic;
+      color: var(--sienna);
+    }
+
+    .cover-sub {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ash);
+      margin-top: var(--sp-6);
+    }
+
+    /* Scattered decorative images on cover */
+    .cover-img {
+      position: absolute;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .cover-img img,
+    .cover-img .img-placeholder {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cover-img-1 {
+      width: 13vw; height: 16vw;
+      top: 8%; left: 4%;
+      transform: rotate(-3deg);
+    }
+    .cover-img-2 {
+      width: 10vw; height: 13vw;
+      top: 5%; right: 8%;
+      transform: rotate(2.5deg);
+    }
+    .cover-img-3 {
+      width: 15vw; height: 18vw;
+      bottom: 12%; left: 16%;
+      transform: rotate(1.5deg);
+    }
+    .cover-img-4 {
+      width: 11vw; height: 14vw;
+      bottom: 8%; right: 5%;
+      transform: rotate(-2deg);
+    }
+    .cover-img-5 {
+      width: 9vw; height: 11vw;
+      top: 40%; right: 22%;
+      transform: rotate(4deg);
+    }
+
+    /* Color placeholder for images */
+    .img-placeholder {
+      background: var(--clay);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .img-placeholder::after {
+      content: attr(data-label);
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bark-30);
+      text-align: center;
+    }
+
+    /* Woven line accent */
+    .cover-weave {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 0;
+      height: 3px;
+      margin-top: auto;
+      opacity: 0.4;
+    }
+
+    .cover-weave span {
+      display: block;
+      height: 100%;
+    }
+
+    .cover-weave span:nth-child(odd)  { background: var(--bark); }
+    .cover-weave span:nth-child(even) { background: var(--sienna); }
+
+    .cover-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: var(--sp-4);
+      margin-top: var(--sp-4);
+    }
+
+    /* =========================================================
+       COLOR SYSTEM
+       ========================================================= */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: var(--sp-4);
+    }
+
+    .color-swatch {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .swatch-block {
+      height: 80px;
+      border-radius: 0;
+      position: relative;
+      transition: transform var(--dur-fast) var(--ease-out);
+    }
+
+    .swatch-block:hover { transform: scaleY(1.08); transform-origin: bottom; }
+
+    .swatch-block.bordered { border: 1px solid var(--bark-12); }
+
+    .swatch-name {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bark);
+      margin-top: var(--sp-3);
+      font-weight: 500;
+    }
+
+    .swatch-value {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      color: var(--ash);
+      margin-top: var(--sp-1);
+    }
+
+    .swatch-token {
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--sienna);
+      margin-top: var(--sp-1);
+      opacity: 0.8;
+    }
+
+    /* =========================================================
+       TYPOGRAPHY SYSTEM
+       ========================================================= */
+    .type-specimen { display: flex; flex-direction: column; gap: var(--sp-8); }
+
+    .type-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: var(--sp-8);
+      align-items: baseline;
+      padding: var(--sp-6) 0;
+      border-bottom: var(--rule);
+    }
+
+    .type-meta {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-1);
+    }
+
+    .type-role {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ash);
+      font-weight: 500;
+    }
+
+    .type-size-info {
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--bark-30);
+    }
+
+    /* Type classes for live specimen */
+    .t-hero {
+      font-family: var(--font-display);
+      font-size: var(--text-hero);
+      font-weight: 300;
+      line-height: 0.88;
+      letter-spacing: -0.025em;
+    }
+
+    .t-display {
+      font-family: var(--font-display);
+      font-size: var(--text-6xl);
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+    }
+
+    .t-display-italic {
+      font-family: var(--font-display);
+      font-size: var(--text-5xl);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+    }
+
+    .t-h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+    }
+
+    .t-h2 {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    .t-h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 400;
+      line-height: 1.15;
+    }
+
+    .t-h4 {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .t-lead {
+      font-family: var(--font-body);
+      font-size: var(--text-lg);
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--bark-60);
+    }
+
+    .t-body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    .t-small {
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--ash);
+    }
+
+    .t-label {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ash);
+    }
+
+    .t-sc {
+      font-family: var(--font-sc);
+      font-size: var(--text-sm);
+      font-weight: 400;
+      letter-spacing: 0.12em;
+    }
+
+    /* =========================================================
+       SPACING SYSTEM
+       ========================================================= */
+    .spacing-row {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--sp-8);
+      flex-wrap: wrap;
+      padding: var(--sp-8) 0;
+    }
+
+    .spacing-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--sp-2);
+    }
+
+    .spacing-bar {
+      background: var(--sienna);
+      opacity: 0.25;
+      width: 24px;
+    }
+
+    .spacing-token {
+      font-family: monospace;
+      font-size: 9px;
+      color: var(--sienna);
+      letter-spacing: 0.05em;
+    }
+
+    .spacing-val {
+      font-family: var(--font-body);
+      font-size: 9px;
+      color: var(--ash);
+    }
+
+    /* =========================================================
+       COMPONENTS
+       ========================================================= */
+
+    /* --- Button system --- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-3);
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      background: none;
+      transition:
+        color var(--dur-fast) var(--ease-out),
+        background var(--dur-fast) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out),
+        opacity var(--dur-fast) var(--ease-out);
+      white-space: nowrap;
+    }
+
+    .btn:active { transform: translateY(1px); }
+
+    /* Primary */
+    .btn-primary {
+      background: var(--bark);
+      color: var(--linen);
+      padding: var(--sp-4) var(--sp-8);
+    }
+    .btn-primary:hover { background: var(--sienna); }
+
+    /* Secondary */
+    .btn-secondary {
+      background: transparent;
+      color: var(--bark);
+      padding: var(--sp-4) var(--sp-8);
+      border: 1px solid var(--bark-30);
+    }
+    .btn-secondary:hover {
+      border-color: var(--bark);
+      background: var(--bark-12);
+    }
+
+    /* Ghost — link style */
+    .btn-ghost {
+      color: var(--bark);
+      padding: 0;
+      position: relative;
+    }
+
+    .btn-ghost::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 100%;
+      height: 1px;
+      background: var(--bark);
+      transition: right var(--dur-med) var(--ease-out);
+    }
+
+    .btn-ghost:hover::after { right: 0; }
+
+    /* Arrow button */
+    .btn-arrow {
+      color: var(--bark);
+      padding: 0;
+      gap: var(--sp-4);
+    }
+
+    .btn-arrow .arrow {
+      display: inline-block;
+      font-size: 1.1em;
+      transition: transform var(--dur-med) var(--ease-out);
+    }
+
+    .btn-arrow:hover .arrow { transform: translateX(6px); }
+
+    /* Sienna accent variant */
+    .btn-accent {
+      background: var(--sienna);
+      color: var(--wool);
+      padding: var(--sp-4) var(--sp-8);
+    }
+    .btn-accent:hover { background: var(--sienna-light); }
+
+    /* Small modifier */
+    .btn-sm { padding: var(--sp-2) var(--sp-6) !important; font-size: 10px !important; }
+
+    /* --- Tag / Badge --- */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--bark);
+      background: transparent;
+      border: 1px solid var(--bark-30);
+      padding: var(--sp-1) var(--sp-4);
+      border-radius: 100px;
+      gap: var(--sp-2);
+    }
+
+    .tag::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--sienna);
+      flex-shrink: 0;
+    }
+
+    .tag-filled {
+      background: var(--bark);
+      color: var(--linen);
+      border-color: var(--bark);
+    }
+
+    .tag-filled::before { background: var(--camel); }
+
+    .tag-warm {
+      background: var(--clay);
+      color: var(--bark);
+      border-color: var(--clay);
+    }
+
+    .tag-warm::before { background: var(--sienna); }
+
+    /* --- Navigation --- */
+    .nav-demo {
+      border: var(--rule);
+      padding: var(--sp-4) var(--sp-8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--wool);
+    }
+
+    .nav-logo {
+      font-family: var(--font-sc);
+      font-size: var(--text-xl);
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      color: var(--bark);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: var(--sp-12);
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--bark-60);
+      transition: color var(--dur-fast) var(--ease-out);
+    }
+
+    .nav-links a:hover { color: var(--bark); }
+
+    .nav-cta {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--sienna);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+
+    /* --- Card — product --- */
+    .card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-image {
+      aspect-ratio: 3 / 4;
+      background: var(--clay);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-image .img-placeholder {
+      height: 100%;
+      transition: transform var(--dur-slow) var(--ease-out);
+    }
+
+    .card:hover .card-image .img-placeholder { transform: scale(1.04); }
+
+    .card-body {
+      padding: var(--sp-4) 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .card-name {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 400;
+      line-height: 1.2;
+    }
+
+    .card-name em { font-style: italic; color: var(--ash); font-size: 0.85em; }
+
+    .card-detail {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ash);
+      margin-top: var(--sp-1);
+    }
+
+    .card-price {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 300;
+      color: var(--bark);
+      white-space: nowrap;
+    }
+
+    /* --- Feature section (alternating) --- */
+    .feature {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-16);
+      align-items: center;
+      padding: var(--sp-24) 0;
+    }
+
+    .feature.reverse { direction: rtl; }
+    .feature.reverse > * { direction: ltr; }
+
+    .feature-image {
+      aspect-ratio: 4 / 5;
+      background: var(--clay);
+      overflow: hidden;
+    }
+
+    .feature-image .img-placeholder { height: 100%; }
+
+    .feature-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-6);
+    }
+
+    .feature-content .tag { align-self: flex-start; }
+
+    .feature-heading {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-heading em {
+      font-style: italic;
+      color: var(--sienna);
+    }
+
+    .feature-body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--bark-60);
+      max-width: 36ch;
+    }
+
+    .feature-stats {
+      display: flex;
+      gap: var(--sp-12);
+      padding-top: var(--sp-6);
+      border-top: var(--rule);
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ash);
+      margin-top: var(--sp-1);
+    }
+
+    /* --- Quote / Testimonial --- */
+    .quote-block {
+      padding: var(--sp-16) 0;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--sp-8);
+    }
+
+    .quote-rule {
+      width: 2px;
+      background: var(--sienna);
+      opacity: 0.4;
+      align-self: stretch;
+    }
+
+    .quote-text {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.4;
+      letter-spacing: -0.005em;
+      color: var(--bark);
+      max-width: 52ch;
+    }
+
+    .quote-author {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      margin-top: var(--sp-6);
+    }
+
+    .quote-author-line {
+      width: 32px;
+      height: 1px;
+      background: var(--bark-30);
+    }
+
+    .quote-author-name {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ash);
+    }
+
+    /* --- Section header editorial --- */
+    .section-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: flex-end;
+      padding-bottom: var(--sp-8);
+      border-bottom: var(--rule);
+      margin-bottom: var(--sp-12);
+    }
+
+    .section-header-label {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ash);
+      margin-bottom: var(--sp-4);
+    }
+
+    .section-header-title {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .section-header-count {
+      font-family: var(--font-display);
+      font-size: var(--text-6xl);
+      font-weight: 300;
+      color: var(--bark-12);
+      line-height: 1;
+    }
+
+    /* --- Marquee / ticker --- */
+    .marquee-track {
+      overflow: hidden;
+      border-top: var(--rule);
+      border-bottom: var(--rule);
+      padding: var(--sp-4) 0;
+      background: var(--wool);
+    }
+
+    .marquee-inner {
+      display: flex;
+      gap: var(--sp-16);
+      animation: marquee 20s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-item {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 300;
+      font-style: italic;
+      white-space: nowrap;
+      color: var(--bark);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-8);
+    }
+
+    .marquee-item::after {
+      content: '×';
+      font-style: normal;
+      color: var(--sienna);
+      font-size: 0.6em;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* --- Counter row --- */
+    .counter-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: var(--rule);
+    }
+
+    .counter-item {
+      padding: var(--sp-8) var(--sp-8);
+      border-right: var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .counter-item:last-child { border-right: none; }
+
+    .counter-num {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .counter-num sup {
+      font-size: 0.4em;
+      vertical-align: super;
+      letter-spacing: 0;
+    }
+
+    .counter-desc {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ash);
+      line-height: 1.5;
+    }
+
+    /* --- Hero layout sketch --- */
+    .hero-sketch {
+      position: relative;
+      min-height: 70vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: var(--sp-8);
+      padding: var(--sp-16) 0;
+    }
+
+    .hero-sketch-text {
+      grid-column: 1 / 2;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-6);
+    }
+
+    .hero-sketch-visual {
+      grid-column: 2 / 3;
+      position: relative;
+    }
+
+    .hero-sketch-main-img {
+      aspect-ratio: 3 / 4;
+      background: var(--clay);
+      width: 80%;
+      margin-left: auto;
+    }
+
+    .hero-sketch-float-img {
+      position: absolute;
+      width: 38%;
+      aspect-ratio: 1;
+      background: var(--camel);
+      bottom: -8%;
+      left: 5%;
+      box-shadow: -4px 4px 0 var(--linen), -5px 5px 0 var(--clay);
+    }
+
+    .hero-num {
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      letter-spacing: 0.2em;
+      color: var(--ash);
+    }
+
+    /* --- Form inputs --- */
+    .input-field {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--bark-30);
+      padding: var(--sp-3) 0;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 300;
+      color: var(--bark);
+      outline: none;
+      transition: border-color var(--dur-fast) var(--ease-out);
+    }
+
+    .input-field::placeholder {
+      color: var(--bark-30);
+      letter-spacing: 0.05em;
+    }
+
+    .input-field:focus { border-bottom-color: var(--bark); }
+
+    .input-label {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ash);
+      display: block;
+      margin-bottom: var(--sp-2);
+    }
+
+    .input-group { display: flex; flex-direction: column; }
+
+    /* --- Divider / Rule --- */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      margin: var(--sp-4) 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--bark-12);
+    }
+
+    .divider-text {
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      font-style: italic;
+      color: var(--ash);
+      white-space: nowrap;
+    }
+
+    /* --- Breadcrumb / Nav path --- */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ash);
+    }
+
+    .breadcrumb-sep {
+      opacity: 0.4;
+      font-style: normal;
+    }
+
+    .breadcrumb a { color: inherit; text-decoration: none; }
+    .breadcrumb a:hover { color: var(--bark); }
+    .breadcrumb span { color: var(--bark); }
+
+    /* --- Accordion --- */
+    .accordion-item {
+      border-bottom: var(--rule);
+    }
+
+    .accordion-trigger {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--sp-6) 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      gap: var(--sp-4);
+    }
+
+    .accordion-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 400;
+      color: var(--bark);
+    }
+
+    .accordion-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .accordion-icon::before,
+    .accordion-icon::after {
+      content: '';
+      position: absolute;
+      background: var(--bark);
+      transition: transform var(--dur-med) var(--ease-out), opacity var(--dur-med) var(--ease-out);
+    }
+
+    .accordion-icon::before {
+      width: 100%; height: 1px;
+      top: 50%; left: 0;
+      transform: translateY(-50%);
+    }
+
+    .accordion-icon::after {
+      width: 1px; height: 100%;
+      left: 50%; top: 0;
+      transform: translateX(-50%);
+    }
+
+    .accordion-item.open .accordion-icon::after { opacity: 0; transform: translateX(-50%) rotate(90deg); }
+
+    .accordion-body {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height var(--dur-slow) var(--ease-out);
+    }
+
+    .accordion-item.open .accordion-body { max-height: 300px; }
+
+    .accordion-content {
+      padding: 0 0 var(--sp-6);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--bark-60);
+      max-width: 52ch;
+    }
+
+    /* --- Grid layout demo --- */
+    .grid-demo {
+      border: var(--rule);
+      padding: var(--sp-4);
+    }
+
+    .grid-cols-demo {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--grid-gap);
+    }
+
+    .grid-col-demo {
+      height: 32px;
+      background: var(--sienna);
+      opacity: 0.12;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .grid-col-demo span {
+      font-size: 9px;
+      font-family: monospace;
+      color: var(--sienna);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .grid-col-demo:hover { opacity: 0.3; }
+    .grid-col-demo:hover span { opacity: 1; }
+
+    /* =========================================================
+       DS SECTION HEADER STYLE
+       ========================================================= */
+    .ds-heading {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      display: flex;
+      align-items: baseline;
+      gap: var(--sp-6);
+    }
+
+    .ds-heading-num {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ash);
+      font-weight: 500;
+    }
+
+    .ds-section-intro {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 300;
+      color: var(--bark-60);
+      max-width: 55ch;
+      margin-top: var(--sp-4);
+      line-height: 1.7;
+    }
+
+    .ds-section-top {
+      margin-bottom: var(--sp-12);
+    }
+
+    /* =========================================================
+       COMPONENT PREVIEWS — surface containers
+       ========================================================= */
+    .preview {
+      background: var(--wool);
+      padding: var(--sp-8);
+      border: var(--rule);
+    }
+
+    .preview-dark {
+      background: var(--bark);
+      padding: var(--sp-8);
+    }
+
+    .preview-linen {
+      background: var(--linen);
+      padding: var(--sp-8);
+      border: var(--rule);
+    }
+
+    .preview-label {
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--ash);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--sp-4);
+    }
+
+    /* Component rows */
+    .comp-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-6);
+      flex-wrap: wrap;
+    }
+
+    .comp-col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-6);
+    }
+
+    /* =========================================================
+       ANIMATION SECTION
+       ========================================================= */
+    .anim-demo {
+      padding: var(--sp-8);
+      background: var(--wool);
+      border: var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-6);
+    }
+
+    .anim-bar-row { display: flex; align-items: center; gap: var(--sp-4); }
+
+    .anim-bar {
+      height: 2px;
+      background: var(--sienna);
+      width: 0;
+      animation: growBar 1.2s var(--ease-out) 0.5s forwards;
+    }
+
+    @keyframes growBar {
+      to { width: 100%; }
+    }
+
+    .anim-fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      animation: fadeUp 0.9s var(--ease-out) 0.3s forwards;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .anim-fade-up-2 { animation-delay: 0.5s; }
+    .anim-fade-up-3 { animation-delay: 0.7s; }
+
+    .anim-reveal {
+      overflow: hidden;
+    }
+
+    .anim-reveal-inner {
+      display: block;
+      transform: translateY(110%);
+      animation: revealUp 0.8s var(--ease-out) 0.4s forwards;
+    }
+
+    @keyframes revealUp {
+      to { transform: translateY(0); }
+    }
+
+    /* Hover states showcase */
+    .hover-row {
+      display: flex;
+      gap: var(--sp-6);
+      flex-wrap: wrap;
+    }
+
+    .hover-card {
+      width: 140px;
+      height: 180px;
+      background: var(--clay);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform var(--dur-slow) var(--ease-out);
+    }
+
+    .hover-card:hover { transform: scale(1.03) rotate(-1deg); }
+
+    .hover-card-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bark);
+      color: var(--linen);
+      padding: var(--sp-3) var(--sp-4);
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transform: translateY(100%);
+      transition: transform var(--dur-med) var(--ease-out);
+    }
+
+    .hover-card:hover .hover-card-label { transform: translateY(0); }
+
+    /* =========================================================
+       PATTERN: WOVEN / TEXTILE
+       ========================================================= */
+    .weave-pattern {
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 3px,
+          var(--bark-12) 3px,
+          var(--bark-12) 4px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 3px,
+          var(--bark-12) 3px,
+          var(--bark-12) 4px
+        );
+      height: 80px;
+      width: 100%;
+    }
+
+    .weave-pattern-2 {
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 4px,
+          var(--sienna) 4px,
+          var(--sienna) 5px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 4px,
+          var(--clay) 4px,
+          var(--clay) 5px
+        );
+      height: 80px;
+      width: 100%;
+      opacity: 0.4;
+    }
+
+    .weave-pattern-3 {
+      height: 80px;
+      width: 100%;
+      background:
+        repeating-conic-gradient(var(--clay) 0% 25%, var(--linen) 0% 50%)
+        0 0 / 8px 8px;
+      opacity: 0.6;
+    }
+
+    /* Herringbone — V-shaped twill, warp threads crossing at 60° */
+    .weave-pattern-4 {
+      height: 80px;
+      width: 100%;
+      background-image:
+        repeating-linear-gradient(
+          60deg,
+          transparent 0px,
+          transparent 3px,
+          var(--sienna) 3px,
+          var(--sienna) 4px,
+          transparent 4px,
+          transparent 10px
+        ),
+        repeating-linear-gradient(
+          -60deg,
+          transparent 0px,
+          transparent 3px,
+          var(--camel) 3px,
+          var(--camel) 4px,
+          transparent 4px,
+          transparent 10px
+        );
+      opacity: 0.35;
+    }
+
+    /* Lozenge — diamond float pattern, käsitsi kootud vaipade rombimotiiv */
+    .weave-pattern-5 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--linen);
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          var(--bark-12) 0px,
+          var(--bark-12) 1px,
+          transparent 1px,
+          transparent 12px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          var(--bark-12) 0px,
+          var(--bark-12) 1px,
+          transparent 1px,
+          transparent 12px
+        ),
+        repeating-linear-gradient(
+          45deg,
+          transparent 5px,
+          var(--clay) 5px,
+          var(--clay) 6px,
+          transparent 6px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          transparent 5px,
+          var(--clay) 5px,
+          var(--clay) 6px,
+          transparent 6px
+        );
+      opacity: 0.7;
+    }
+
+    /* Wool ground — peenikesed vertikaalid --wool taustal */
+    .weave-pattern-13 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--wool);
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 15px,
+          var(--bark-12) 15px,
+          var(--bark-12) 16px
+        );
+    }
+
+    /* Raw linen — hajuv punktiväli --raw taustal */
+    .weave-pattern-14 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--raw);
+      background-image:
+        radial-gradient(circle, var(--bark-12) 1px, transparent 1px);
+      background-size: 12px 12px;
+    }
+
+    /* Clay wash — horisontaalribad --clay taustal */
+    .weave-pattern-15 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--clay);
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 11px,
+          rgba(255,255,255,0.35) 11px,
+          rgba(255,255,255,0.35) 12px
+        );
+      opacity: 0.6;
+    }
+
+    /* Quiet frame â€” pehme siseraam ja keskne aktsent 56px süsteemis */
+    /* Warp pair â€” kahekaupa lõimerütm õrna vahega */
+    .weave-pattern-28 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--wool);
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 6px,
+          var(--bark-12) 6px,
+          var(--bark-12) 7px,
+          transparent 7px,
+          transparent 10px,
+          var(--clay) 10px,
+          var(--clay) 11px,
+          transparent 11px,
+          transparent 20px
+        );
+      opacity: 0.62;
+    }
+
+    /* Offset basket â€” maleline põiming nihkes sammuga */
+    .weave-pattern-29 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--linen);
+      background:
+        repeating-conic-gradient(
+          from 45deg,
+          rgba(212, 191, 160, 0.55) 0% 25%,
+          rgba(237, 232, 223, 0) 0% 50%
+        )
+        0 0 / 10px 10px,
+        repeating-conic-gradient(
+          from 45deg,
+          rgba(28, 24, 20, 0.06) 0% 25%,
+          rgba(237, 232, 223, 0) 0% 50%
+        )
+        5px 5px / 10px 10px;
+      opacity: 0.72;
+    }
+
+    /* Reed lines â€” peened vertikaalid horisontaalse sideniidiga */
+    .weave-pattern-30 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--raw);
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 17px,
+          var(--bark-12) 17px,
+          var(--bark-12) 18px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 7px,
+          rgba(196, 168, 130, 0.55) 7px,
+          rgba(196, 168, 130, 0.55) 8px
+        );
+      opacity: 0.6;
+    }
+
+    /* Broken twill â€” katkestatud diagonaal rahulikus rütmis */
+    .weave-pattern-31 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--linen);
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          transparent 0px,
+          transparent 5px,
+          var(--camel) 5px,
+          var(--camel) 6px,
+          transparent 6px,
+          transparent 15px
+        ),
+        repeating-linear-gradient(
+          45deg,
+          transparent 0px,
+          transparent 15px,
+          var(--bark-12) 15px,
+          var(--bark-12) 16px,
+          transparent 16px,
+          transparent 30px
+        );
+      opacity: 0.46;
+    }
+
+    /* Soft lattice â€” avatud rombivõrk suurema hingamisega */
+    .weave-pattern-32 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--wool);
+      background-image:
+        repeating-linear-gradient(
+          60deg,
+          transparent 0px,
+          transparent 11px,
+          var(--bark-12) 11px,
+          var(--bark-12) 12px
+        ),
+        repeating-linear-gradient(
+          -60deg,
+          transparent 0px,
+          transparent 11px,
+          rgba(196, 168, 130, 0.75) 11px,
+          rgba(196, 168, 130, 0.75) 12px
+        );
+      opacity: 0.44;
+    }
+
+    /* Weft band â€” pikemad koelõnga väljad peene lõikega */
+    .weave-pattern-33 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--clay);
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 9px,
+          rgba(255,255,255,0.32) 9px,
+          rgba(255,255,255,0.32) 10px,
+          transparent 10px,
+          transparent 27px,
+          rgba(28,24,20,0.08) 27px,
+          rgba(28,24,20,0.08) 28px
+        );
+      opacity: 0.68;
+    }
+
+    /* Needle grid â€” peen ruudustik hajusa aktsendiga */
+    .weave-pattern-34 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--raw);
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 5px,
+          var(--bark-12) 5px,
+          var(--bark-12) 6px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 5px,
+          rgba(196, 168, 130, 0.45) 5px,
+          rgba(196, 168, 130, 0.45) 6px
+        );
+      opacity: 0.38;
+    }
+
+    /* Dune stripe â€” lai horisontaalne voog õrna vahelöögiga */
+    .weave-pattern-35 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--linen);
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 13px,
+          rgba(196, 168, 130, 0.55) 13px,
+          rgba(196, 168, 130, 0.55) 14px,
+          transparent 14px,
+          transparent 22px,
+          rgba(28, 24, 20, 0.08) 22px,
+          rgba(28, 24, 20, 0.08) 23px
+        );
+      opacity: 0.58;
+    }
+
+    /* Pin dot check â€” täpi ja peenjoone ristumisel tekkiv pind */
+    .weave-pattern-36 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--raw);
+      background-image:
+        radial-gradient(circle, rgba(196, 168, 130, 0.7) 1px, transparent 1px),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 15px,
+          rgba(28, 24, 20, 0.08) 15px,
+          rgba(28, 24, 20, 0.08) 16px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 15px,
+          rgba(28, 24, 20, 0.08) 15px,
+          rgba(28, 24, 20, 0.08) 16px
+        );
+      background-size: 16px 16px, auto, auto;
+      opacity: 0.46;
+    }
+
+    .weave-pattern-16 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--wool);
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 7px,
+          var(--bark-12) 7px,
+          var(--bark-12) 8px,
+          transparent 8px,
+          transparent 15px,
+          var(--clay) 15px,
+          var(--clay) 16px
+        );
+      opacity: 0.72;
+    }
+
+    /* Thread ladder â€” kaks posti ja kolm peent sidet */
+    .weave-pattern-17 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--raw);
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          transparent 0px,
+          transparent 6px,
+          var(--camel) 6px,
+          var(--camel) 7px,
+          transparent 7px,
+          transparent 14px
+        ),
+        repeating-linear-gradient(
+          45deg,
+          transparent 0px,
+          transparent 13px,
+          var(--bark-12) 13px,
+          var(--bark-12) 14px,
+          transparent 14px,
+          transparent 28px
+        );
+      opacity: 0.55;
+    }
+
+    /* Four knots â€” neli väikest sõlme ja vaikne risttelg */
+    .weave-pattern-18 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--linen);
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 8px,
+          var(--clay) 8px,
+          var(--clay) 9px,
+          transparent 9px,
+          transparent 18px,
+          var(--bark-12) 18px,
+          var(--bark-12) 19px
+        );
+      opacity: 0.62;
+    }
+
+    /* Soft bars â€” kolm tasakaalus horisontaalset riba */
+    .weave-pattern-19 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--wool);
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 11px,
+          var(--bark-12) 11px,
+          var(--bark-12) 12px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 11px,
+          var(--clay) 11px,
+          var(--clay) 12px
+        );
+      opacity: 0.58;
+    }
+
+    /* Corner fold â€” nurkades korrapärased L-märgid */
+    .weave-pattern-20 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--raw);
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 10px,
+          var(--bark-12) 10px,
+          var(--bark-12) 11px,
+          transparent 11px,
+          transparent 21px,
+          var(--camel) 21px,
+          var(--camel) 22px
+        );
+      opacity: 0.56;
+    }
+
+    /* Center stitch â€” rist ja neli saatvat punkti */
+    .weave-pattern-21 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--raw);
+      background-image:
+        radial-gradient(circle, var(--camel) 1px, transparent 1px),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 15px,
+          var(--bark-12) 15px,
+          var(--bark-12) 16px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 15px,
+          var(--bark-12) 15px,
+          var(--bark-12) 16px
+        );
+      background-size: 16px 16px, auto, auto;
+      opacity: 0.52;
+    }
+
+    /* Selvedge - ebaühtlase sammuga peened servatriibud */
+    .weave-pattern-22 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--wool);
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 5px,
+          var(--bark-12) 5px,
+          var(--bark-12) 6px,
+          transparent 6px,
+          transparent 17px,
+          var(--camel) 17px,
+          var(--camel) 18px,
+          transparent 18px,
+          transparent 24px
+        );
+      opacity: 0.58;
+    }
+
+    /* Grain check - hõre ruutvõrk kahe pehme joonega */
+    .weave-pattern-23 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--raw);
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 13px,
+          var(--bark-12) 13px,
+          var(--bark-12) 14px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 13px,
+          var(--camel) 13px,
+          var(--camel) 14px
+        );
+      opacity: 0.46;
+    }
+
+    /* Drift stripe - pikk rahulik horisontaal vahelduva aktsendiga */
+    .weave-pattern-24 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--linen);
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 7px,
+          var(--bark-12) 7px,
+          var(--bark-12) 8px,
+          transparent 8px,
+          transparent 23px,
+          var(--clay) 23px,
+          var(--clay) 24px
+        );
+      opacity: 0.58;
+    }
+
+    /* Fine hatch - tihe kahe suuna kaldniidistus */
+    .weave-pattern-25 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--raw);
+      background-image:
+        repeating-linear-gradient(
+          60deg,
+          transparent 0px,
+          transparent 8px,
+          var(--bark-12) 8px,
+          var(--bark-12) 9px
+        ),
+        repeating-linear-gradient(
+          -60deg,
+          transparent 0px,
+          transparent 8px,
+          var(--clay) 8px,
+          var(--clay) 9px
+        );
+      opacity: 0.38;
+    }
+
+    /* Dust dot - korrapärane peen täpiväli kahetoonilise rütmiga */
+    .weave-pattern-26 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--raw);
+      background-image:
+        radial-gradient(circle, var(--camel) 1px, transparent 1px),
+        radial-gradient(circle, var(--bark-12) 1px, transparent 1px);
+      background-size: 16px 16px, 16px 16px;
+      background-position: 0 0, 8px 8px;
+      opacity: 0.5;
+    }
+
+    /* Loom stripe - lõime ja koelõnga rahulik rütm eri sammudes */
+    .weave-pattern-27 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--wool);
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 9px,
+          var(--bark-12) 9px,
+          var(--bark-12) 10px,
+          transparent 10px,
+          transparent 19px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 19px,
+          var(--clay) 19px,
+          var(--clay) 20px
+        );
+      opacity: 0.54;
+    }
+
+    /* Breath — harv üksikjoon, palju vaba ruumi */
+    .weave-pattern-10 {
+      height: 80px;
+      width: 100%;
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 19px,
+          var(--bark-12) 19px,
+          var(--bark-12) 20px
+        );
+    }
+
+    /* Cross stitch — lihtne rist harva võrgul */
+    .weave-pattern-11 {
+      height: 80px;
+      width: 100%;
+      background-color: transparent;
+      background-image:
+        radial-gradient(circle, var(--camel) 1px, transparent 1px);
+      background-size: 20px 20px;
+      opacity: 0.5;
+    }
+
+    /* Shore — kaks tooni lained, tekstiili varjuriivad */
+    .weave-pattern-12 {
+      height: 80px;
+      width: 100%;
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 9px,
+          var(--clay) 9px,
+          var(--clay) 10px,
+          transparent 10px,
+          transparent 29px,
+          var(--bark-12) 29px,
+          var(--bark-12) 30px
+        );
+      opacity: 0.6;
+    }
+
+    /* Ikat — udune värviülekandemuster, lõimede värvimise jäljed */
+    .weave-pattern-7 {
+      height: 80px;
+      width: 100%;
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          var(--sienna) 0px,
+          var(--camel) 2px,
+          transparent 2px,
+          transparent 6px,
+          var(--clay) 6px,
+          var(--camel) 7px,
+          transparent 7px,
+          transparent 14px,
+          var(--bark-12) 14px,
+          var(--camel) 15px,
+          transparent 15px,
+          transparent 20px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 8px,
+          var(--clay) 8px,
+          var(--clay) 9px,
+          transparent 9px,
+          transparent 18px,
+          var(--bark-12) 18px,
+          var(--bark-12) 19px
+        );
+      opacity: 0.5;
+    }
+
+    /* Satin float — harva vabalt läbiv lõng, satiinkoe efekt */
+    .weave-pattern-8 {
+      height: 80px;
+      width: 100%;
+      background-color: var(--wool);
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          var(--bark-12) 0px,
+          var(--bark-12) 1px,
+          transparent 1px,
+          transparent 24px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          var(--bark-12) 0px,
+          var(--bark-12) 1px,
+          transparent 1px,
+          transparent 24px
+        ),
+        radial-gradient(
+          circle at 0px 0px,
+          var(--camel) 0px,
+          var(--camel) 1.5px,
+          transparent 1.5px
+        );
+      background-size: 24px 24px, 24px 24px, 24px 24px;
+      background-position: 0 0, 0 0, 12px 12px;
+      opacity: 0.7;
+    }
+
+    /* Stripe reserve — käsitsi rebitud varjuribad, ebaühtlase pingega lõim */
+    .weave-pattern-9 {
+      height: 80px;
+      width: 100%;
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          var(--sienna)  0px,  var(--sienna)  1px,
+          transparent    1px,  transparent    3px,
+          var(--clay)    3px,  var(--clay)    4px,
+          transparent    4px,  transparent    9px,
+          var(--bark-12) 9px,  var(--bark-12) 10px,
+          transparent   10px,  transparent   11px,
+          var(--clay)   11px,  var(--clay)   12px,
+          transparent   12px,  transparent   20px,
+          var(--camel)  20px,  var(--camel)  22px,
+          transparent   22px,  transparent   24px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 3px,
+          var(--bark-12) 3px,
+          var(--bark-12) 4px
+        );
+      opacity: 0.55;
+    }
+
+    /* Weft float — horisontaalsed uduribad, nagu lahtine lõng kangal */
+    .weave-pattern-6 {
+      height: 80px;
+      width: 100%;
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 5px,
+          var(--clay) 5px,
+          var(--clay) 6px,
+          transparent 6px,
+          transparent 11px,
+          var(--bark-12) 11px,
+          var(--bark-12) 12px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 18px,
+          var(--sienna) 18px,
+          var(--sienna) 19px,
+          transparent 19px,
+          transparent 36px
+        );
+      opacity: 0.45;
+    }
+
+    /* =========================================================
+       MOTION — JS-powered examples
+       ========================================================= */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--sienna);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, opacity 0.3s;
+      mix-blend-mode: multiply;
+    }
+
+    /* =========================================================
+       PAGE STRUCTURE / LAYOUT PATTERNS
+       ========================================================= */
+    .layout-pattern {
+      border: var(--rule);
+      background: var(--wool);
+      padding: var(--sp-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
+    }
+
+    .pattern-chip-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--sp-4);
+      margin-top: var(--sp-8);
+    }
+
+    .pattern-chip-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .pattern-chip {
+      width: 56px;
+      height: 56px;
+      border: 1px solid var(--bark-12);
+      flex-shrink: 0;
+    }
+
+    .pattern-chip-demo {
+      height: 80px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--wool);
+    }
+
+    .lp-row {
+      display: flex;
+      gap: var(--sp-2);
+      height: 40px;
+    }
+
+    .lp-block {
+      background: var(--clay);
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lp-block span {
+      font-size: 8px;
+      font-family: monospace;
+      color: var(--bark-30);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .lp-block.wide { flex: 2; }
+    .lp-block.wider { flex: 3; }
+    .lp-block.narrower { flex: 0.5; }
+    .lp-block.dark { background: var(--bark); }
+    .lp-block.dark span { color: var(--linen); opacity: 0.3; }
+    .lp-block.accent { background: var(--sienna); opacity: 0.3; }
+    .lp-row.tall { height: 80px; }
+    .lp-row.taller { height: 120px; }
+
+    /* =========================================================
+       EDITORIAL TEXT PATTERNS
+       ========================================================= */
+    .editorial-hero {
+      position: relative;
+      padding: var(--sp-16) 0;
+      overflow: hidden;
+    }
+
+    .editorial-bg-text {
+      font-family: var(--font-display);
+      font-size: clamp(6rem, 18vw, 16rem);
+      font-weight: 300;
+      color: var(--bark-12);
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      pointer-events: none;
+      user-select: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+    }
+
+    .editorial-fore-text {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Inline image in text */
+    .inline-word-image {
+      display: inline-block;
+      width: 5em;
+      height: 2.5em;
+      background: var(--clay);
+      vertical-align: middle;
+      overflow: hidden;
+      border-radius: 2px;
+      margin: 0 0.15em;
+    }
+
+    .inline-word-image .img-placeholder {
+      height: 100%;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+    @media (max-width: 900px) {
+      :root { --page-pad: clamp(1.25rem, 4vw, 2.5rem); }
+      .type-row { grid-template-columns: 120px 1fr; }
+      .feature { grid-template-columns: 1fr; }
+      .feature.reverse { direction: ltr; }
+      .counter-row { grid-template-columns: repeat(2, 1fr); }
+      .counter-item:nth-child(2) { border-right: none; }
+    }
+
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .ds-grid { grid-template-columns: 1fr; }
+      .type-row { grid-template-columns: 1fr; gap: var(--sp-2); }
+      .counter-row { grid-template-columns: 1fr 1fr; }
+      .cover-img-2, .cover-img-3, .cover-img-5 { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor-dot" id="cursor"></div>
+
+<!-- ============================================================
+     COVER
+     ============================================================ -->
+<div class="cover">
+
+  <div class="cover-top">
+    <span class="cover-top-label">Design System v1.0</span>
+    <span class="cover-top-label">PIIA Studio — 2025</span>
+  </div>
+
+  <!-- Scattered placeholder images -->
+  <div class="cover-img cover-img-1">
+    <div class="img-placeholder" data-label="rug texture"></div>
+  </div>
+  <div class="cover-img cover-img-2">
+    <div class="img-placeholder" style="background:var(--camel)" data-label="weaving"></div>
+  </div>
+  <div class="cover-img cover-img-3">
+    <div class="img-placeholder" style="background:var(--sienna);opacity:0.5" data-label="detail"></div>
+  </div>
+  <div class="cover-img cover-img-4">
+    <div class="img-placeholder" style="background:var(--ash);opacity:0.3" data-label="studio"></div>
+  </div>
+  <div class="cover-img cover-img-5">
+    <div class="img-placeholder" style="background:var(--clay)" data-label="pattern"></div>
+  </div>
+
+  <div class="cover-wordmark">
+    <h1 class="cover-name">PIIA<em>®</em></h1>
+    <p class="cover-sub">käsitsi kootud vaibad &nbsp;·&nbsp; hand-woven rugs &nbsp;·&nbsp; Tallinn</p>
+  </div>
+
+  <div>
+    <div class="cover-weave">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="cover-bottom">
+      <span class="cover-top-label">Editorial Craft Luxury</span>
+      <span class="cover-top-label">CSS Award Standard</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     01 — COLOR SYSTEM
+     ============================================================ -->
+<div class="ds-section">
+  <div class="ds-page">
+
+    <div class="ds-section-top">
+      <div class="ds-heading">
+        <span class="ds-heading-num">01</span>
+        Color System
+      </div>
+      <p class="ds-section-intro">
+        Derived from natural textile materials — raw linen, undyed wool, bark,
+        and sienna clay pigment. Every tone is warm, never cold.
+      </p>
+    </div>
+
+    <span class="ds-label">Foundation Palette</span>
+    <div class="color-grid">
+
+      <div class="color-swatch">
+        <div class="swatch-block bordered" style="background:#EDE8DF"></div>
+        <span class="swatch-name">Linen</span>
+        <span class="swatch-value">#EDE8DF</span>
+        <span class="swatch-token">--linen</span>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block bordered" style="background:#F7F3EE"></div>
+        <span class="swatch-name">Wool</span>
+        <span class="swatch-value">#F7F3EE</span>
+        <span class="swatch-token">--wool</span>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block bordered" style="background:#FAF8F5"></div>
+        <span class="swatch-name">Raw</span>
+        <span class="swatch-value">#FAF8F5</span>
+        <span class="swatch-token">--raw</span>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#1C1814"></div>
+        <span class="swatch-name">Bark</span>
+        <span class="swatch-value">#1C1814</span>
+        <span class="swatch-token">--bark</span>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#7D5038"></div>
+        <span class="swatch-name">Sienna</span>
+        <span class="swatch-value">#7D5038</span>
+        <span class="swatch-token">--sienna</span>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#A8724E"></div>
+        <span class="swatch-name">Sienna Light</span>
+        <span class="swatch-value">#A8724E</span>
+        <span class="swatch-token">--sienna-light</span>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#C4A882"></div>
+        <span class="swatch-name">Camel</span>
+        <span class="swatch-value">#C4A882</span>
+        <span class="swatch-token">--camel</span>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#D4BFA0"></div>
+        <span class="swatch-name">Clay</span>
+        <span class="swatch-value">#D4BFA0</span>
+        <span class="swatch-token">--clay</span>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#9B9289"></div>
+        <span class="swatch-name">Ash</span>
+        <span class="swatch-value">#9B9289</span>
+        <span class="swatch-token">--ash</span>
+      </div>
+
+    </div>
+
+    <div style="margin-top:var(--sp-12)">
+      <span class="ds-label">Opacity Variants — Bark</span>
+      <div class="color-grid" style="grid-template-columns:repeat(auto-fill,minmax(120px,1fr))">
+        <div class="color-swatch">
+          <div class="swatch-block bordered" style="background:rgba(28,24,20,0.60)"></div>
+          <span class="swatch-name">60%</span>
+          <span class="swatch-token">--bark-60</span>
+        </div>
+        <div class="color-swatch">
+          <div class="swatch-block bordered" style="background:rgba(28,24,20,0.30)"></div>
+          <span class="swatch-name">30%</span>
+          <span class="swatch-token">--bark-30</span>
+        </div>
+        <div class="color-swatch">
+          <div class="swatch-block bordered" style="background:rgba(28,24,20,0.12)"></div>
+          <span class="swatch-name">12%</span>
+          <span class="swatch-token">--bark-12</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Woven texture patterns -->
+    <div style="margin-top:var(--sp-12)">
+      <span class="ds-label">Textile Patterns — CSS only</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-4)">
+        <div>
+          <div class="weave-pattern"></div>
+          <p class="ds-meta">Warp grid — 4px</p>
+        </div>
+        <div>
+          <div class="weave-pattern-2"></div>
+          <p class="ds-meta">Diagonal twill</p>
+        </div>
+        <div>
+          <div class="weave-pattern-3"></div>
+          <p class="ds-meta">Basketweave — 8px</p>
+        </div>
+        <div>
+          <div class="weave-pattern-4"></div>
+          <p class="ds-meta">Herringbone — 60°</p>
+        </div>
+        <div>
+          <div class="weave-pattern-5"></div>
+          <p class="ds-meta">Lozenge — diamond float</p>
+        </div>
+        <div>
+          <div class="weave-pattern-6"></div>
+          <p class="ds-meta">Weft float — open thread</p>
+        </div>
+        <div>
+          <div class="weave-pattern-13"></div>
+          <p class="ds-meta">Wool ground — vertical 16px</p>
+        </div>
+        <div>
+          <div class="weave-pattern-14"></div>
+          <p class="ds-meta">Raw linen — dot scatter</p>
+        </div>
+        <div>
+          <div class="weave-pattern-15"></div>
+          <p class="ds-meta">Clay wash — soft stripe</p>
+        </div>
+        <div>
+          <div class="weave-pattern-28"></div>
+          <p class="ds-meta">Warp pair — twin reed</p>
+        </div>
+        <div>
+          <div class="weave-pattern-29"></div>
+          <p class="ds-meta">Offset basket — soft check</p>
+        </div>
+        <div>
+          <div class="weave-pattern-30"></div>
+          <p class="ds-meta">Reed lines — bound weft</p>
+        </div>
+        <div>
+          <div class="weave-pattern-31"></div>
+          <p class="ds-meta">Broken twill — quiet step</p>
+        </div>
+        <div>
+          <div class="weave-pattern-32"></div>
+          <p class="ds-meta">Soft lattice — open diamond</p>
+        </div>
+        <div>
+          <div class="weave-pattern-33"></div>
+          <p class="ds-meta">Weft band — long float</p>
+        </div>
+        <div>
+          <div class="weave-pattern-34"></div>
+          <p class="ds-meta">Needle grid — fine check</p>
+        </div>
+        <div>
+          <div class="weave-pattern-35"></div>
+          <p class="ds-meta">Dune stripe — slow rhythm</p>
+        </div>
+        <div>
+          <div class="weave-pattern-36"></div>
+          <p class="ds-meta">Pin dot check — woven field</p>
+        </div>
+      
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-16"></div>
+          </div>
+          <p class="ds-meta">Reed stripe - dual vertical</p>
+        </div>
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-17"></div>
+          </div>
+          <p class="ds-meta">Broken twill - staggered diagonal</p>
+        </div>
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-18"></div>
+          </div>
+          <p class="ds-meta">Banded weft - two-tone rhythm</p>
+        </div>
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-19"></div>
+          </div>
+          <p class="ds-meta">Cross reed - open grid</p>
+        </div>
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-20"></div>
+          </div>
+          <p class="ds-meta">Offset stripe - shifted band</p>
+        </div>
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-21"></div>
+          </div>
+          <p class="ds-meta">Dot lattice - soft grid</p>
+        </div>
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-22"></div>
+          </div>
+          <p class="ds-meta">Selvedge - uneven vertical</p>
+        </div>
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-23"></div>
+          </div>
+          <p class="ds-meta">Grain check - open square</p>
+        </div>
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-24"></div>
+          </div>
+          <p class="ds-meta">Drift stripe - spaced band</p>
+        </div>
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-25"></div>
+          </div>
+          <p class="ds-meta">Fine hatch - diagonal weave</p>
+        </div>
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-26"></div>
+          </div>
+          <p class="ds-meta">Dust dot - offset field</p>
+        </div>
+        <div>
+          <div class="pattern-chip-demo">
+            <div class="pattern-chip weave-pattern-27"></div>
+          </div>
+          <p class="ds-meta">Loom stripe - mixed cadence</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+     02 — TYPOGRAPHY
+     ============================================================ -->
+<div class="ds-section">
+  <div class="ds-page">
+
+    <div class="ds-section-top">
+      <div class="ds-heading">
+        <span class="ds-heading-num">02</span>
+        Typography
+      </div>
+      <p class="ds-section-intro">
+        <strong style="font-weight:500">Cormorant Garant</strong> for all display and editorial moments —
+        ultra-refined hairline serifs, deeply expressive in italic.
+        <strong style="font-weight:500">Outfit</strong> for clarity at reading scale.
+        Never use them at the same weight.
+      </p>
+    </div>
+
+    <div class="type-specimen">
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Hero Display</span>
+          <span class="type-size-info">clamp(88px → 180px)<br>wt 300 / ls -0.025</span>
+        </div>
+        <div class="t-hero">Vaip</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Display</span>
+          <span class="type-size-info">128px / wt 300<br>ls -0.020</span>
+        </div>
+        <div class="t-display">Craft</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Display Italic</span>
+          <span class="type-size-info">88px / wt 300 italic<br>ls -0.010</span>
+        </div>
+        <div class="t-display-italic">Handwoven</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Heading 1</span>
+          <span class="type-size-info">62px / wt 400<br>ls -0.015</span>
+        </div>
+        <div class="t-h1">The art of slow making</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Heading 2</span>
+          <span class="type-size-info">44px / wt 400<br>ls -0.010</span>
+        </div>
+        <div class="t-h2">Each rug is a singular object</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Heading 3</span>
+          <span class="type-size-info">32px / wt 400</span>
+        </div>
+        <div class="t-h3">Woven from reclaimed wool</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Heading 4</span>
+          <span class="type-size-info">24px / wt 500</span>
+        </div>
+        <div class="t-h4">Natural dye collection, 2025</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Lead / Intro</span>
+          <span class="type-size-info">19px / wt 300<br>Outfit lh 1.65</span>
+        </div>
+        <div class="t-lead">Piia creates hand-woven rugs in a small studio in Tallinn, Estonia. Every piece begins with raw wool and ends as a lasting object for your home.</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Body</span>
+          <span class="type-size-info">16px / wt 300<br>lh 1.70</span>
+        </div>
+        <div class="t-body">The warp is set by hand each morning before natural light fills the studio. Each pass of the shuttle is a decision — colour, tension, rhythm. This is not production; it is practice.</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Small / Meta</span>
+          <span class="type-size-info">13px / wt 400</span>
+        </div>
+        <div class="t-small">Made to order · 6–10 week lead time · Ships worldwide</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Label / Tag</span>
+          <span class="type-size-info">11px / wt 500<br>ls 0.160em uppercase</span>
+        </div>
+        <div class="t-label">New collection</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="type-role">Small Caps</span>
+          <span class="type-size-info">Cormorant SC<br>13px / ls 0.12em</span>
+        </div>
+        <div class="t-sc">Piia Studio — Tallinn, Estonia</div>
+      </div>
+
+    </div>
+
+    <!-- Type pairing example -->
+    <div style="margin-top:var(--sp-16)">
+      <span class="ds-label">Pairing in context</span>
+      <div class="preview" style="padding:var(--sp-12)">
+        <p class="t-label" style="margin-bottom:var(--sp-4)">New arrival</p>
+        <h2 class="t-h1" style="max-width:12ch;margin-bottom:var(--sp-6)">
+          The <em style="font-style:italic;color:var(--sienna)">Rukkilill</em> rug
+        </h2>
+        <p class="t-lead" style="max-width:42ch;margin-bottom:var(--sp-8)">
+          Inspired by the blue cornflower — Estonia's national flower —
+          woven in undyed wool with natural indigo accents.
+        </p>
+        <a href="#" class="btn btn-arrow">
+          View piece <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+     03 — SPACING & GRID
+     ============================================================ -->
+<div class="ds-section">
+  <div class="ds-page">
+
+    <div class="ds-section-top">
+      <div class="ds-heading">
+        <span class="ds-heading-num">03</span>
+        Spacing & Grid
+      </div>
+      <p class="ds-section-intro">
+        12-column grid. Spacing scale mirrors the warp-and-weft metaphor:
+        every unit is a multiple of 4px — consistent, rhythmic, precise.
+      </p>
+    </div>
+
+    <span class="ds-label">Spacing Scale</span>
+    <div class="spacing-row">
+      <div class="spacing-item">
+        <div class="spacing-bar" style="height:4px"></div>
+        <span class="spacing-token">--sp-1</span>
+        <span class="spacing-val">4px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar" style="height:8px"></div>
+        <span class="spacing-token">--sp-2</span>
+        <span class="spacing-val">8px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar" style="height:12px"></div>
+        <span class="spacing-token">--sp-3</span>
+        <span class="spacing-val">12px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar" style="height:16px"></div>
+        <span class="spacing-token">--sp-4</span>
+        <span class="spacing-val">16px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar" style="height:24px"></div>
+        <span class="spacing-token">--sp-6</span>
+        <span class="spacing-val">24px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar" style="height:32px"></div>
+        <span class="spacing-token">--sp-8</span>
+        <span class="spacing-val">32px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar" style="height:48px"></div>
+        <span class="spacing-token">--sp-12</span>
+        <span class="spacing-val">48px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar" style="height:64px"></div>
+        <span class="spacing-token">--sp-16</span>
+        <span class="spacing-val">64px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar" style="height:96px"></div>
+        <span class="spacing-token">--sp-24</span>
+        <span class="spacing-val">96px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar" style="height:128px"></div>
+        <span class="spacing-token">--sp-32</span>
+        <span class="spacing-val">128px</span>
+      </div>
+    </div>
+
+    <div style="margin-top:var(--sp-12)">
+      <span class="ds-label">12-Column Grid — hover columns</span>
+      <div class="grid-demo">
+        <div class="grid-cols-demo">
+          <div class="grid-col-demo"><span>1</span></div>
+          <div class="grid-col-demo"><span>2</span></div>
+          <div class="grid-col-demo"><span>3</span></div>
+          <div class="grid-col-demo"><span>4</span></div>
+          <div class="grid-col-demo"><span>5</span></div>
+          <div class="grid-col-demo"><span>6</span></div>
+          <div class="grid-col-demo"><span>7</span></div>
+          <div class="grid-col-demo"><span>8</span></div>
+          <div class="grid-col-demo"><span>9</span></div>
+          <div class="grid-col-demo"><span>10</span></div>
+          <div class="grid-col-demo"><span>11</span></div>
+          <div class="grid-col-demo"><span>12</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layout patterns -->
+    <div style="margin-top:var(--sp-12)">
+      <span class="ds-label">Layout Compositions</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-6)">
+
+        <div>
+          <p class="ds-meta" style="margin-bottom:var(--sp-3)">Hero — asymmetric split</p>
+          <div class="layout-pattern">
+            <div class="lp-row taller">
+              <div class="lp-block narrower dark"><span>nav</span></div>
+              <div class="lp-block wide"><span>headline</span></div>
+              <div class="lp-block wider dark"><span>image</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="ds-meta" style="margin-bottom:var(--sp-3)">Feature — alternating</p>
+          <div class="layout-pattern">
+            <div class="lp-row tall">
+              <div class="lp-block wider dark"><span>image</span></div>
+              <div class="lp-block wide"><span>text</span></div>
+            </div>
+            <div class="lp-row tall">
+              <div class="lp-block wide"><span>text</span></div>
+              <div class="lp-block wider dark"><span>image</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="ds-meta" style="margin-bottom:var(--sp-3)">Collection — editorial grid</p>
+          <div class="layout-pattern">
+            <div class="lp-row tall">
+              <div class="lp-block dark"><span>img</span></div>
+              <div class="lp-block dark"><span>img</span></div>
+              <div class="lp-block dark"><span>img</span></div>
+            </div>
+            <div class="lp-row">
+              <div class="lp-block"><span>text</span></div>
+              <div class="lp-block"><span>text</span></div>
+              <div class="lp-block"><span>text</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="ds-meta" style="margin-bottom:var(--sp-3)">Scattered — Thomas Vance ref.</p>
+          <div class="layout-pattern" style="position:relative;height:160px;overflow:hidden">
+            <div style="position:absolute;width:30%;height:60%;background:var(--clay);top:5%;left:10%;transform:rotate(-3deg)"></div>
+            <div style="position:absolute;width:25%;height:50%;background:var(--camel);top:20%;left:55%;transform:rotate(2deg)"></div>
+            <div style="position:absolute;width:20%;height:40%;background:var(--sienna);opacity:0.4;bottom:5%;left:35%;transform:rotate(-1.5deg)"></div>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-display);font-size:2.5rem;font-weight:300;color:var(--bark);white-space:nowrap;z-index:2">PIIA</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+     04 — COMPONENTS
+     ============================================================ -->
+<div class="ds-section">
+  <div class="ds-page">
+
+    <div class="ds-section-top">
+      <div class="ds-heading">
+        <span class="ds-heading-num">04</span>
+        Components
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <span class="ds-label">Buttons</span>
+    <div class="preview">
+      <div class="comp-row" style="margin-bottom:var(--sp-6)">
+        <button class="btn btn-primary">Order a rug</button>
+        <button class="btn btn-secondary">View collection</button>
+        <button class="btn btn-accent">Commission piece</button>
+        <button class="btn btn-ghost">Learn more</button>
+        <button class="btn btn-arrow">Explore all <span class="arrow">→</span></button>
+      </div>
+      <div class="comp-row">
+        <button class="btn btn-primary btn-sm">Add to inquiry</button>
+        <button class="btn btn-secondary btn-sm">Save</button>
+        <button class="btn btn-accent btn-sm">In stock</button>
+      </div>
+    </div>
+
+    <!-- TAGS -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Tags & Badges</span>
+    <div class="preview">
+      <div class="comp-row">
+        <span class="tag">Hand-woven</span>
+        <span class="tag">Natural dye</span>
+        <span class="tag tag-filled">New arrival</span>
+        <span class="tag tag-warm">Made to order</span>
+        <span class="tag">Wool &amp; linen</span>
+        <span class="tag tag-filled">Sold</span>
+      </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Navigation</span>
+    <div class="nav-demo">
+      <div class="nav-logo">Piia</div>
+      <ul class="nav-links">
+        <li><a href="#">Collection</a></li>
+        <li><a href="#">Process</a></li>
+        <li><a href="#">Commission</a></li>
+        <li><a href="#">Studio</a></li>
+      </ul>
+      <a href="#" class="nav-cta">Inquire &nbsp;→</a>
+    </div>
+
+    <!-- BREADCRUMB -->
+    <div style="margin-top:var(--sp-4)">
+      <div class="breadcrumb">
+        <a href="#">Home</a>
+        <span class="breadcrumb-sep">·</span>
+        <a href="#">Collection</a>
+        <span class="breadcrumb-sep">·</span>
+        <span>Rukkilill Rug</span>
+      </div>
+    </div>
+
+    <!-- PRODUCT CARD -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Product Cards</span>
+    <div class="preview">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-6)">
+
+        <div class="card">
+          <div class="card-image">
+            <div class="img-placeholder" style="height:100%;background:var(--clay)"></div>
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="card-name">Mets <em>Forest</em></div>
+              <div class="card-detail">160 × 230 cm · Wool</div>
+            </div>
+            <div class="card-price">€ 840</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-image">
+            <div class="img-placeholder" style="height:100%;background:var(--camel)"></div>
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="card-name">Rukkilill <em>Cornflower</em></div>
+              <div class="card-detail">120 × 180 cm · Wool & linen</div>
+            </div>
+            <div class="card-price">€ 560</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-image">
+            <div class="img-placeholder" style="height:100%;background:var(--ash);opacity:0.4"></div>
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="card-name">Torm <em>Storm</em></div>
+              <div class="card-detail">80 × 120 cm · Natural wool</div>
+            </div>
+            <div class="card-price">€ 320</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FEATURE SECTION -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Feature Section (alternating)</span>
+    <div class="preview-linen">
+      <div class="feature">
+        <div class="feature-image">
+          <div class="img-placeholder" style="height:100%;background:var(--clay)"></div>
+        </div>
+        <div class="feature-content">
+          <span class="tag">The process</span>
+          <h3 class="feature-heading">
+            Every thread is <em>chosen</em> by hand
+          </h3>
+          <p class="feature-body">
+            Piia sources wool from small Baltic farms — undyed where possible,
+            plant-dyed for colour. The yarn is washed, carded, and spun before
+            it meets the loom.
+          </p>
+          <a href="#" class="btn btn-arrow">See how it's made <span class="arrow">→</span></a>
+          <div class="feature-stats">
+            <div>
+              <div class="stat-number">6–10</div>
+              <div class="stat-label">weeks per rug</div>
+            </div>
+            <div>
+              <div class="stat-number">100<sup>%</sup></div>
+              <div class="stat-label">natural materials</div>
+            </div>
+            <div>
+              <div class="stat-number">1</div>
+              <div class="stat-label">piece at a time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTE -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Testimonial / Quote</span>
+    <div class="preview">
+      <div class="quote-block">
+        <div class="quote-rule"></div>
+        <div class="quote-content">
+          <p class="quote-text">
+            "The rug arrived and the room stopped being a room.
+            It became a place."
+          </p>
+          <div class="quote-author">
+            <div class="quote-author-line"></div>
+            <span class="quote-author-name">Kaisa L. — Helsinki, Finland</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COUNTERS -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Statistics Counter Row</span>
+    <div class="counter-row">
+      <div class="counter-item">
+        <div class="counter-num">84</div>
+        <div class="counter-desc">Rugs completed<br>this year</div>
+      </div>
+      <div class="counter-item">
+        <div class="counter-num">12<sup>+</sup></div>
+        <div class="counter-desc">Countries where<br>Piia's rugs live</div>
+      </div>
+      <div class="counter-item">
+        <div class="counter-num">100<sup>%</sup></div>
+        <div class="counter-desc">Natural,<br>traceable materials</div>
+      </div>
+      <div class="counter-item">
+        <div class="counter-num">1</div>
+        <div class="counter-desc">Studio.<br>One maker.</div>
+      </div>
+    </div>
+
+    <!-- SECTION HEADER PATTERN -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Section Header — Editorial</span>
+    <div class="preview-linen">
+      <div class="section-header">
+        <div>
+          <div class="section-header-label">The collection</div>
+          <h2 class="section-header-title">Each piece,<br><em style="font-style:italic;color:var(--sienna)">singular</em></h2>
+        </div>
+        <div class="section-header-count">08</div>
+      </div>
+    </div>
+
+    <!-- ACCORDION -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Accordion — FAQ</span>
+    <div class="preview">
+      <div>
+        <div class="accordion-item open">
+          <button class="accordion-trigger" onclick="this.parentElement.classList.toggle('open')">
+            <span class="accordion-title">How long does a commission take?</span>
+            <span class="accordion-icon"></span>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-content">
+              Most commissions take between 6 and 10 weeks from the date of first
+              consultation. Complex patterns or larger formats may require more time —
+              I'll always give you an honest estimate before we begin.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" onclick="this.parentElement.classList.toggle('open')">
+            <span class="accordion-title">What materials do you use?</span>
+            <span class="accordion-icon"></span>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-content">
+              I work primarily with Estonian and Latvian wool, sourced from small farms
+              I visit personally. Colour is achieved through plant-based dyes where possible.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" onclick="this.parentElement.classList.toggle('open')">
+            <span class="accordion-title">Do you ship internationally?</span>
+            <span class="accordion-icon"></span>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-content">
+              Yes — Piia's rugs currently live in homes across Europe, North America,
+              and Japan. Shipping is carefully packaged by hand.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUTS -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Form Inputs</span>
+    <div class="preview" style="max-width:600px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-8);margin-bottom:var(--sp-8)">
+        <div class="input-group">
+          <label class="input-label">Your name</label>
+          <input class="input-field" type="text" placeholder="Liis Tamm">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Email</label>
+          <input class="input-field" type="email" placeholder="liis@example.ee">
+        </div>
+      </div>
+      <div class="input-group" style="margin-bottom:var(--sp-8)">
+        <label class="input-label">Tell me about your space</label>
+        <input class="input-field" type="text" placeholder="A quiet corner in the living room...">
+      </div>
+      <div style="display:flex;justify-content:flex-end">
+        <button class="btn btn-primary">Send inquiry</button>
+      </div>
+    </div>
+
+    <!-- DIVIDER -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Divider</span>
+    <div class="preview">
+      <div class="divider">
+        <span class="divider-text">handmade in Tallinn</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+     05 — MOTION & ANIMATION
+     ============================================================ -->
+<div class="ds-section">
+  <div class="ds-page">
+
+    <div class="ds-section-top">
+      <div class="ds-heading">
+        <span class="ds-heading-num">05</span>
+        Motion
+      </div>
+      <p class="ds-section-intro">
+        Animations serve the narrative — never decorative for its own sake.
+        Fade-up reveals, text curtain lifts, and subtle image scales create
+        a sense of unhurried craft.
+      </p>
+    </div>
+
+    <!-- Easing tokens -->
+    <span class="ds-label">Easing Curves</span>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-6);margin-bottom:var(--sp-12)">
+      <div class="preview">
+        <span class="swatch-name" style="margin-bottom:var(--sp-2)">ease-out</span>
+        <p class="ds-meta">cubic-bezier(0.22, 1, 0.36, 1)</p>
+        <p style="font-size:var(--text-xs);color:var(--ash);margin-top:var(--sp-2)">Enters fast, settles gently. Default for reveals.</p>
+      </div>
+      <div class="preview">
+        <span class="swatch-name" style="margin-bottom:var(--sp-2)">ease-in</span>
+        <p class="ds-meta">cubic-bezier(0.64, 0, 0.78, 0)</p>
+        <p style="font-size:var(--text-xs);color:var(--ash);margin-top:var(--sp-2)">Exits quickly. For dismissals and closings.</p>
+      </div>
+      <div class="preview">
+        <span class="swatch-name" style="margin-bottom:var(--sp-2)">ease-circ</span>
+        <p class="ds-meta">cubic-bezier(0.0, 0.0, 0.2, 1.0)</p>
+        <p style="font-size:var(--text-xs);color:var(--ash);margin-top:var(--sp-2)">Smooth, circular. For large transitions.</p>
+      </div>
+    </div>
+
+    <!-- Live animation demos -->
+    <span class="ds-label">Animation Patterns — Live</span>
+    <div class="anim-demo">
+
+      <div>
+        <p style="font-size:var(--text-xs);letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:var(--sp-3)">1. Fade up reveal (staggered)</p>
+        <div class="anim-fade-up t-h3">The making</div>
+        <div class="anim-fade-up anim-fade-up-2 t-lead" style="margin-top:var(--sp-3)">Each rug begins with stillness.</div>
+        <div class="anim-fade-up anim-fade-up-3" style="margin-top:var(--sp-4)"><a href="#" class="btn btn-arrow">Explore <span class="arrow">→</span></a></div>
+      </div>
+
+      <div style="border-top:var(--rule);padding-top:var(--sp-6)">
+        <p style="font-size:var(--text-xs);letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:var(--sp-3)">2. Text curtain lift (per-line)</p>
+        <div style="overflow:hidden;line-height:1.1">
+          <div class="anim-reveal">
+            <span class="anim-reveal-inner t-h2">Hand-woven.</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top:var(--rule);padding-top:var(--sp-6)">
+        <p style="font-size:var(--text-xs);letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:var(--sp-3)">3. Progress bar (warp thread)</p>
+        <div class="anim-bar-row">
+          <span style="font-size:var(--text-xs);color:var(--ash);white-space:nowrap">Week 1 of 8</span>
+          <div style="flex:1;background:var(--bark-12);height:1px;position:relative">
+            <div class="anim-bar" style="position:absolute;top:0;left:0;height:100%"></div>
+          </div>
+          <span style="font-size:var(--text-xs);color:var(--ash)">12.5%</span>
+        </div>
+      </div>
+
+      <div style="border-top:var(--rule);padding-top:var(--sp-6)">
+        <p style="font-size:var(--text-xs);letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:var(--sp-4)">4. Image hover states</p>
+        <div class="hover-row">
+          <div class="hover-card">
+            <div style="width:100%;height:100%;background:var(--clay)"></div>
+            <div class="hover-card-label">Mets · Forest</div>
+          </div>
+          <div class="hover-card" style="height:140px;width:180px">
+            <div style="width:100%;height:100%;background:var(--camel)"></div>
+            <div class="hover-card-label">Rukkilill</div>
+          </div>
+          <div class="hover-card" style="height:200px;width:120px">
+            <div style="width:100%;height:100%;background:var(--ash);opacity:0.5"></div>
+            <div class="hover-card-label">Torm · Storm</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Duration tokens -->
+    <div style="margin-top:var(--sp-8)">
+      <span class="ds-label">Duration Tokens</span>
+      <div style="display:flex;gap:var(--sp-6);flex-wrap:wrap">
+        <div class="preview" style="min-width:140px">
+          <span class="swatch-name">Fast</span>
+          <span class="swatch-token">--dur-fast: 0.25s</span>
+          <p class="ds-meta">Micro-interactions, hovers</p>
+        </div>
+        <div class="preview" style="min-width:140px">
+          <span class="swatch-name">Medium</span>
+          <span class="swatch-token">--dur-med: 0.55s</span>
+          <p class="ds-meta">Panel transitions, labels</p>
+        </div>
+        <div class="preview" style="min-width:140px">
+          <span class="swatch-name">Slow</span>
+          <span class="swatch-token">--dur-slow: 0.9s</span>
+          <p class="ds-meta">Page reveals, image scales</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+     06 — EDITORIAL PATTERNS
+     ============================================================ -->
+<div class="ds-section">
+  <div class="ds-page">
+
+    <div class="ds-section-top">
+      <div class="ds-heading">
+        <span class="ds-heading-num">06</span>
+        Editorial Patterns
+      </div>
+      <p class="ds-section-intro">
+        Specific typographic and layout compositions inspired by the reference sites —
+        to be used at section and page level for visual impact.
+      </p>
+    </div>
+
+    <!-- Marquee -->
+    <span class="ds-label">Marquee Ticker</span>
+    <div class="marquee-track">
+      <div class="marquee-inner">
+        <span class="marquee-item">Hand-woven in Tallinn</span>
+        <span class="marquee-item">Natural materials only</span>
+        <span class="marquee-item">Made to order</span>
+        <span class="marquee-item">6–10 weeks</span>
+        <span class="marquee-item">Singular objects</span>
+        <span class="marquee-item">Hand-woven in Tallinn</span>
+        <span class="marquee-item">Natural materials only</span>
+        <span class="marquee-item">Made to order</span>
+        <span class="marquee-item">6–10 weeks</span>
+        <span class="marquee-item">Singular objects</span>
+      </div>
+    </div>
+
+    <!-- Oversized background text -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Oversized Background Typography</span>
+    <div class="preview-linen" style="min-height:280px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
+      <div class="editorial-bg-text">VAIP</div>
+      <div class="editorial-fore-text" style="text-align:center;position:relative;z-index:2">
+        <span class="tag tag-warm" style="margin-bottom:var(--sp-4)">New collection 2025</span>
+        <p class="t-h2" style="margin-top:var(--sp-2)">The <em style="font-style:italic;color:var(--sienna)">Põld</em> series</p>
+      </div>
+    </div>
+
+    <!-- Inline image word replacement (Offcoustic ref.) -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Inline Image — Word Replacement</span>
+    <div class="preview-linen" style="padding:var(--sp-12) var(--sp-8)">
+      <p class="t-h1" style="line-height:1.2">
+        Piia
+        <span class="inline-word-image">
+          <div class="img-placeholder" style="height:100%;background:var(--clay)"></div>
+        </span>
+        weaves
+        <span class="inline-word-image" style="width:3.5em">
+          <div class="img-placeholder" style="height:100%;background:var(--camel)"></div>
+        </span>
+        rugs
+      </p>
+    </div>
+
+    <!-- Scattered image hero layout (Thomas Vance ref.) -->
+    <span class="ds-label" style="margin-top:var(--sp-12)">Scattered Image Hero</span>
+    <div class="preview-linen" style="min-height:360px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
+
+      <!-- Scattered images -->
+      <div style="position:absolute;width:12%;aspect-ratio:3/4;background:var(--clay);top:6%;left:5%;transform:rotate(-3.5deg)"></div>
+      <div style="position:absolute;width:10%;aspect-ratio:1;background:var(--camel);top:8%;right:10%;transform:rotate(2deg)"></div>
+      <div style="position:absolute;width:14%;aspect-ratio:4/5;background:var(--sienna);opacity:0.5;bottom:8%;left:18%;transform:rotate(1deg)"></div>
+      <div style="position:absolute;width:11%;aspect-ratio:3/4;background:var(--ash);opacity:0.4;bottom:10%;right:6%;transform:rotate(-2.5deg)"></div>
+      <div style="position:absolute;width:9%;aspect-ratio:1;background:var(--clay);top:35%;right:22%;transform:rotate(4deg)"></div>
+
+      <div style="text-align:center;position:relative;z-index:2">
+        <h1 style="font-family:var(--font-display);font-size:clamp(3rem,8vw,6rem);font-weight:300;letter-spacing:-0.02em;line-height:0.9;color:var(--bark)">
+          PIIA<em style="font-style:normal;color:var(--sienna)">®</em>
+        </h1>
+        <p style="font-family:var(--font-body);font-size:var(--text-xs);letter-spacing:0.2em;text-transform:uppercase;color:var(--ash);margin-top:var(--sp-4)">
+          käsitsi kootud vaibad
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+     07 — VOICE & COPY
+     ============================================================ -->
+<div class="ds-section">
+  <div class="ds-page">
+
+    <div class="ds-section-top">
+      <div class="ds-heading">
+        <span class="ds-heading-num">07</span>
+        Voice & Copy
+      </div>
+      <p class="ds-section-intro">
+        Piia's voice is quiet, precise, and warm. Never promotional.
+        She speaks as a maker, not a brand. Short sentences.
+        Specific details over generalisations.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-8)">
+
+      <div>
+        <span class="ds-label" style="color:var(--sienna)">Use</span>
+        <div class="preview" style="margin-top:var(--sp-3)">
+          <div class="comp-col">
+            <div>
+              <p class="t-small" style="color:var(--ash);margin-bottom:var(--sp-1)">Hero headline</p>
+              <p class="t-h3" style="color:var(--bark)">"Each rug begins with a walk."</p>
+            </div>
+            <div>
+              <p class="t-small" style="color:var(--ash);margin-bottom:var(--sp-1)">Product subtitle</p>
+              <p class="t-body">"Woven over eight weeks from undyed Estonian wool."</p>
+            </div>
+            <div>
+              <p class="t-small" style="color:var(--ash);margin-bottom:var(--sp-1)">CTA</p>
+              <p class="t-body">"Begin a commission →"</p>
+            </div>
+            <div>
+              <p class="t-small" style="color:var(--ash);margin-bottom:var(--sp-1)">Process label</p>
+              <p class="t-label">The making</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <span class="ds-label" style="color:var(--bark-30)">Avoid</span>
+        <div class="preview" style="margin-top:var(--sp-3)">
+          <div class="comp-col">
+            <div>
+              <p class="t-small" style="color:var(--ash);margin-bottom:var(--sp-1)">Generic headline</p>
+              <p class="t-h3" style="color:var(--bark-30);text-decoration:line-through">"Premium quality rugs"</p>
+            </div>
+            <div>
+              <p class="t-small" style="color:var(--ash);margin-bottom:var(--sp-1)">Vague claim</p>
+              <p class="t-body" style="color:var(--bark-30);text-decoration:line-through">"Made with the finest materials."</p>
+            </div>
+            <div>
+              <p class="t-small" style="color:var(--ash);margin-bottom:var(--sp-1)">Aggressive CTA</p>
+              <p class="t-body" style="color:var(--bark-30);text-decoration:line-through">"Shop now! Don't miss out!"</p>
+            </div>
+            <div>
+              <p class="t-small" style="color:var(--ash);margin-bottom:var(--sp-1)">Category language</p>
+              <p class="t-label" style="color:var(--bark-30);text-decoration:line-through">Products</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+     MARQUEE FOOTER
+     ============================================================ -->
+<div class="marquee-track" style="margin-top:var(--sp-8)">
+  <div class="marquee-inner" style="animation-direction:reverse">
+    <span class="marquee-item">Design System</span>
+    <span class="marquee-item">PIIA Studio</span>
+    <span class="marquee-item">CSS Award Standard</span>
+    <span class="marquee-item">Editorial Craft Luxury</span>
+    <span class="marquee-item">Tallinn, Estonia</span>
+    <span class="marquee-item">Design System</span>
+    <span class="marquee-item">PIIA Studio</span>
+    <span class="marquee-item">CSS Award Standard</span>
+    <span class="marquee-item">Editorial Craft Luxury</span>
+    <span class="marquee-item">Tallinn, Estonia</span>
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="padding:var(--sp-8) var(--page-pad);display:flex;justify-content:space-between;align-items:center;border-top:var(--rule)">
+  <span class="t-label" style="color:var(--ash)">PIIA Design System v1.0</span>
+  <span class="t-sc" style="font-size:var(--text-sm)">Piia Studio · 2025</span>
+  <span class="t-label" style="color:var(--ash)">CSS Award Standard</span>
+</div>
+
+
+<!-- ============================================================
+     JS — Custom cursor & accordion
+     ============================================================ -->
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  if (cursor) {
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+
+    document.querySelectorAll('a, button, .card, .hover-card').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(3)';
+        cursor.style.opacity = '0.4';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        cursor.style.opacity = '1';
+      });
+    });
+  }
+
+  // Intersection observer — re-trigger fade animations when visible
+  const animEls = document.querySelectorAll('.anim-fade-up, .anim-reveal-inner, .anim-bar');
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, { threshold: 0.2 });
+
+    animEls.forEach(el => {
+      el.style.animationPlayState = 'paused';
+      obs.observe(el);
+    });
+  }
+</script>
+
+</body>
+</html>
+
