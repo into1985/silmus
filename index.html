@@ -1632,7 +1632,6 @@ body.menu-open {
   .gallery-piece-desc { max-width: none; }
   .gallery-piece-rule { display: none; }
   .gallery-pattern-swatch { top: calc(clamp(6rem, 12vw, 8rem) - 55px); }
-  .gallery-footer { grid-template-columns: 1fr; }
   .gallery-footer-rule { display: none; }
   .gallery-footer-cta  {
     position: static;
@@ -2129,12 +2128,10 @@ body.menu-open {
 }
 
 @media (max-width: 560px) {
-  .contact-stage { grid-template-columns: 1fr; align-items: start; gap: var(--sp-16); }
+  .contact-stage { grid-template-columns: 1fr; align-items: start; }
   .contact-left    { grid-column: 1/-1; }
   .contact-details { grid-column: 1/-1; max-width: min(100%, 360px); }
   .contact-watermark { font-size: clamp(8rem, 28vw, 14rem); }
-}
-@media (max-width: 560px) {
   .contact-headline { font-size: clamp(2.4rem, 9.5vw, 3.5rem); }
   .contact-body { font-size: var(--text-base); max-width: none; }
   .contact-cta-text { font-size: clamp(1.25rem, 5vw, 1.7rem); }
