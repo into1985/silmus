@@ -3008,7 +3008,8 @@ function applyHoverParallax(trigger, target, baseScale) {
 
 function initProcess() {
   const canHover = window.matchMedia("(hover: hover)").matches;
-  const processImageScale = canHover ? 1.3 : 1;
+  const isProcessMobile = window.matchMedia("(max-width: 560px)").matches;
+  const processImageScale = isProcessMobile ? 1 : (canHover ? 1.3 : 1);
 
   gsap.set(".process-pattern-swatch", { scaleY: 0, transformOrigin: "top center" });
   gsap.set(".js-proc-eyebrow", { autoAlpha: 0, x: -20 });
@@ -3099,7 +3100,7 @@ function initProcess() {
       }, 0.8);
 
     gsap.to(q(".process-block-image-fill"), {
-      y: "-10%",
+      y: isProcessMobile ? "0%" : "-10%",
       scale: processImageScale,
       scrollTrigger: {
         trigger: block,
