@@ -1362,16 +1362,36 @@ body.menu-open {
   .process-intro { border-bottom: none; }
   .process-intro-lead, .process-intro-body { grid-column: 1/-1; }
   .process-intro-body { padding-bottom: 0; }
-  .process-block { grid-template-columns: 1fr; gap: var(--sp-4); }
+  .process-block {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-4);
+  }
   .process-block { padding: clamp(2rem, 3.5vw, 3.25rem) 0; }
   .process-block { border-bottom: none; }
   .process-block { overflow: visible; }
   .process-block:last-child { padding-bottom: clamp(6rem, 10vw, 8rem); }
   .process-block--odd  .process-block-image,
-  .process-block--even .process-block-image  { grid-column: 1/-1; grid-row: 1; }
+  .process-block--even .process-block-image  {
+    grid-column: auto;
+    grid-row: auto;
+    order: 1;
+    width: 100%;
+  }
   .process-block--odd  .process-block-content,
-  .process-block--even .process-block-content { grid-column: 1/-1; grid-row: 2; padding: 0; }
-  .process-block-label { margin-top: var(--sp-2); }
+  .process-block--even .process-block-content {
+    grid-column: auto;
+    grid-row: auto;
+    order: 2;
+    width: 100%;
+    padding: 0;
+    align-self: auto;
+    justify-content: flex-start;
+  }
+  .process-block--1 .process-block-label,
+  .process-block--2 .process-block-label,
+  .process-block--3 .process-block-label { margin-top: 0; }
   .process-block--1 .process-block-image,
   .process-block--2 .process-block-image,
   .process-block--3 .process-block-image { aspect-ratio: 4/3; }
@@ -1392,7 +1412,6 @@ body.menu-open {
   .process-intro-text br { display: none; }
   .process-block-heading { font-size: clamp(1.65rem, 6.5vw, 2rem); }
   .process-block-body { font-size: var(--text-base); }
-  .process-block--2 .process-block-label { margin-top: var(--sp-2); }
   .process-block-thread { display: none; }
 }
 
