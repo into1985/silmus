@@ -1365,6 +1365,7 @@ body.menu-open {
   .process-block { grid-template-columns: 1fr; gap: var(--sp-4); }
   .process-block { padding: clamp(2rem, 3.5vw, 3.25rem) 0; }
   .process-block { border-bottom: none; }
+  .process-block { overflow: visible; }
   .process-block:last-child { padding-bottom: clamp(6rem, 10vw, 8rem); }
   .process-block--odd  .process-block-image,
   .process-block--even .process-block-image  { grid-column: 1/-1; grid-row: 1; }
@@ -1632,8 +1633,8 @@ body.menu-open {
   .gallery-piece-name { font-size: clamp(1.2rem, 4.5vw, 1.6rem); }
   .gallery-headline { font-size: clamp(2rem, 8vw, 2.8rem); }
   .gallery-piece-img {
-    top: -12%;
-    height: 124%;
+    top: 0;
+    height: 100%;
   }
 }
 
@@ -3007,7 +3008,6 @@ function applyHoverParallax(trigger, target, baseScale) {
 
 function initProcess() {
   const canHover = window.matchMedia("(hover: hover)").matches;
-  const isProcessMobile = window.matchMedia("(max-width: 560px)").matches;
   const processImageScale = canHover ? 1.3 : 1;
 
   gsap.set(".process-pattern-swatch", { scaleY: 0, transformOrigin: "top center" });
@@ -3041,7 +3041,7 @@ function initProcess() {
     gsap.set(q(".process-block-thread"), { autoAlpha: 0, scaleY: 0, transformOrigin: "top center" });
     gsap.set(q(".process-block-heading .hw-i"), { y: "105%" });
     gsap.set(q(".process-block-label"), { autoAlpha: 0, x: -20 });
-    gsap.set(q(".process-block-body"), { autoAlpha: 0, y: isProcessMobile ? 0 : 20 });
+    gsap.set(q(".process-block-body"), { autoAlpha: 0, y: 20 });
     gsap.set(q(".process-block-thread span"), { autoAlpha: 0, scaleY: 0, transformOrigin: "top center" });
 
     const blockTL = gsap.timeline({
