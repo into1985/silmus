@@ -2566,7 +2566,7 @@ body.menu-open {
     <div class="gallery-footer js-gallery-footer">
       <div class="gallery-footer-rule js-gallery-rule" aria-hidden="true"></div>
       <div class="gallery-footer-cta">
-        <a href="#vaibad" class="btn btn-ghost">
+        <a href="https://instagram.com/silmus.vaibad" class="btn btn-ghost" target="_blank" rel="noopener noreferrer" aria-label="Vaata rohkem vaipu Instagramis">
           Vaata rohkem vaipu <span class="arrow" aria-hidden="true"></span>
         </a>
       </div>
@@ -2898,7 +2898,7 @@ function initHero() {
     }
   });
 
-  gsap.to(".hero .img-fill", {
+  gsap.to(".hero-img", {
     y: "-14%",
     scrollTrigger: {
       trigger: ".hero",
@@ -3089,7 +3089,7 @@ function initProcess() {
         ease: "power4.inOut"
       }, 0.2)
       .to(q(".process-block-image-fill"), {
-        scale: 1,
+        scale: processImageScale,
         duration: 2,
         ease: "power4.out"
       }, 0.2)
@@ -3124,9 +3124,8 @@ function initProcess() {
         ease: "power2.out"
       }, 0.8);
 
-    gsap.to(q(".process-block-image-fill"), {
+    gsap.to(imageWrap, {
       y: "-10%",
-      scale: processImageScale,
       scrollTrigger: {
         trigger: block,
         start: "top bottom",
@@ -3146,7 +3145,7 @@ function initProcess() {
     });
 
     if (canHover && imageWrap && imageFill) {
-      applyHoverParallax(imageWrap, imageFill, 1);
+      applyHoverParallax(imageWrap, imageFill, processImageScale);
     }
   });
 }
