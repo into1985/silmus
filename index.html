@@ -327,6 +327,9 @@ h1, h2, h3, h4,
   text-decoration: none;
   line-height: 1;
 }
+.nav-wordmark span {
+  transition: color var(--dur-med) var(--ease-out);
+}
 
 .nav-wordmark-logo {
   width: auto;
@@ -354,6 +357,7 @@ h1, h2, h3, h4,
 .nav-links a:active { color: var(--camel); }
 
 @media (hover: hover) and (pointer: fine) {
+  .nav-wordmark:hover span { color: var(--sienna); }
   .nav-links a:hover { color: var(--camel); }
 }
 
@@ -1406,6 +1410,9 @@ body.menu-open {
 @media (max-width: 900px) {
   .process-block--3 .process-block-thread { bottom: -100px; }
 }
+@media (min-width: 561px) and (max-width: 900px) {
+  .about-pattern-swatch { top: -50px; }
+}
 @media (max-width: 560px) {
   .process-intro { padding: clamp(5.5rem, 12vw, 7rem) 0 clamp(3rem, 8vw, 4rem); }
   .about-pattern-swatch { top: -100px; }
@@ -1506,7 +1513,6 @@ body.menu-open {
 }
 .js .gallery-piece-fill {
   clip-path: inset(100% 0% 0% 0%);
-  transform: scale(1.4);
 }
 .gallery-piece-img {
   position: absolute;
@@ -1534,7 +1540,7 @@ body.menu-open {
   padding-top: var(--sp-6);
   display: flex;
   flex-direction: column;
-  gap: var(--sp-4);
+  gap: var(--sp-2);
 }
 
 .gallery-piece-name-row {
@@ -2080,6 +2086,7 @@ body.menu-open {
 }
 
 .contact-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--sp-4);
@@ -2090,6 +2097,24 @@ body.menu-open {
   will-change: transform, opacity;
 }
 .contact-item:last-child { border-bottom: none; }
+.contact-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--camel);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-med) var(--ease-out);
+}
+.contact-item:last-child::after {
+  display: none;
+}
+.contact-item:focus-within::after {
+  transform: scaleX(1);
+}
 
 .contact-item-label {
   font-family: var(--font-body);
@@ -2114,6 +2139,7 @@ body.menu-open {
 
 @media (hover: hover) and (pointer: fine) {
   .contact-item-value:hover { color: var(--linen); }
+  .contact-item:has(.contact-item-value[href]:hover)::after { transform: scaleX(1); }
 }
 .contact-item-value--static { pointer-events: none; }
 
@@ -2153,7 +2179,11 @@ body.menu-open {
   .contact-colophon { flex-direction: column; align-items: center; text-align: center; gap: var(--sp-3); }
   .contact-watermark { display: none; }
   .contact-stage { gap: var(--sp-12); }
-  .contact-item { padding: var(--sp-6) 0; }
+  .contact-item {
+    width: 50vw;
+    min-width: max-content;
+    padding: var(--sp-6) 0;
+  }
 }
 
 .js .js-about-watermark,
@@ -2880,12 +2910,24 @@ function clearAnimatedProps() {
 
 function initHero() {
   const canHover = window.matchMedia("(hover: hover)").matches;
+  const canUseDesktopMotion = window.matchMedia("(min-width: 901px) and (hover: hover) and (pointer: fine)").matches;
+  const canUseMobileInnerMotion = window.matchMedia("(max-width: 900px)").matches;
 
+  gsap.set(".nav", { autoAlpha: 0, y: 12 });
   gsap.set(".hero-bg-pattern", { autoAlpha: 0 });
+  gsap.set(".hero .hw-i", { y: "105%" });
+  gsap.set(".js-hero-img", { autoAlpha: 0, scale: 1 });
+  gsap.set(".hero .img-fill", { y: 60, scale: 1.1 });
+  gsap.set(".js-hero-reveal", { autoAlpha: 0, y: 20 });
 
   const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
 
-  tl.to(".hero-bg-pattern", { autoAlpha: 0.3, duration: 1.2 }, 0);
+  tl.to(".nav", { autoAlpha: 1, y: 0, duration: 0.8 }, 0)
+    .to(".hero-bg-pattern", { autoAlpha: 0.3, duration: 2 }, 0.1)
+    .to(".hero .hw-i", { y: 0, duration: 1.5, stagger: 0.1 }, "-=1.5")
+    .to(".js-hero-img", { autoAlpha: 1, duration: 2, stagger: 0.15 }, "-=1.2")
+    .to(".hero .img-fill", { y: 0, scale: 1.05, duration: 2, stagger: 0.15 }, "<")
+    .to(".js-hero-reveal", { autoAlpha: 1, y: 0, duration: 1, stagger: 0.1 }, "-=1");
 
   gsap.to(".hero-bg-pattern", {
     y: -12,
@@ -2898,15 +2940,52 @@ function initHero() {
     }
   });
 
-  gsap.to(".hero-img", {
-    y: "-14%",
-    scrollTrigger: {
-      trigger: ".hero",
-      start: "top bottom",
-      end: "bottom top",
-      scrub: true
-    }
-  });
+  if (canUseDesktopMotion) {
+    gsap.to(".hero-img--a", {
+      y: -100,
+      scrollTrigger: {
+        trigger: ".hero",
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      }
+    });
+
+    gsap.to(".hero-img--b", {
+      y: -150,
+      scrollTrigger: {
+        trigger: ".hero",
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      }
+    });
+
+    gsap.to(".hero-img--c", {
+      y: -80,
+      scrollTrigger: {
+        trigger: ".hero",
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      }
+    });
+  } else if (canUseMobileInnerMotion) {
+    document.querySelectorAll(".hero-img").forEach((imageWrap) => {
+      const imageFill = imageWrap.querySelector(".img-fill");
+      if (!imageFill) return;
+
+      gsap.to(imageFill, {
+        yPercent: -6,
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true
+        }
+      });
+    });
+  }
 
   if (canHover) {
     document.querySelectorAll(".hero-img").forEach((imageWrap) => {
@@ -3034,7 +3113,8 @@ function applyHoverParallax(trigger, target, baseScale) {
 
 function initProcess() {
   const canHover = window.matchMedia("(hover: hover)").matches;
-  const processImageScale = canHover ? 1.3 : 1;
+  const canUseMobileInnerMotion = window.matchMedia("(max-width: 900px)").matches;
+  const processImageScale = canHover || canUseMobileInnerMotion ? 1.3 : 1;
 
   gsap.set(".process-pattern-swatch", { scaleY: 0, transformOrigin: "top center" });
   gsap.set(".js-proc-eyebrow", { autoAlpha: 0, x: -20 });
@@ -3124,15 +3204,27 @@ function initProcess() {
         ease: "power2.out"
       }, 0.8);
 
-    gsap.to(imageWrap, {
-      y: "-10%",
-      scrollTrigger: {
-        trigger: block,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true
-      }
-    });
+    if (canUseMobileInnerMotion) {
+      gsap.to(imageFill, {
+        yPercent: -10,
+        scrollTrigger: {
+          trigger: block,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true
+        }
+      });
+    } else {
+      gsap.to(imageWrap, {
+        y: "-10%",
+        scrollTrigger: {
+          trigger: block,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true
+        }
+      });
+    }
 
     gsap.to(q(".process-block-watermark"), {
       x: index === 1 ? -100 : 100,
@@ -3152,8 +3244,8 @@ function initProcess() {
 
 function initGallery() {
   const canHover = window.matchMedia("(hover: hover)").matches;
-  const galleryImageScale = canHover ? 1.12 : 1;
-  const galleryRevealScale = canHover ? 1.02 : 1;
+  const canUseMobileInnerMotion = window.matchMedia("(max-width: 900px)").matches;
+  const galleryImageScale = canHover || canUseMobileInnerMotion ? 1.3 : 1;
 
   gsap.set(".gallery-header .eyebrow", { autoAlpha: 0, x: -20 });
   gsap.set(".gallery-intro-text", { autoAlpha: 0, y: 20 });
@@ -3192,13 +3284,13 @@ function initGallery() {
       }
     })
       .to(img, { clipPath: "inset(0% 0% 0% 0%)", autoAlpha: 1, duration: 1.5, ease: "power4.inOut" })
-      .to(imgElement, { scale: galleryRevealScale, duration: 2.5, ease: "power2.out" }, 0)
+      .to(imgElement, { scale: galleryImageScale, duration: 2.5, ease: "power2.out" }, 0)
       .to(q(".gallery-piece-name, .gallery-piece-meta"), { autoAlpha: 1, y: 0, stagger: 0.1, duration: 1 }, "-=0.8")
       .to(rule, { scaleX: 1, duration: 1.5, ease: "expo.inOut" }, "-=1")
       .to(q(".gallery-piece-desc"), { autoAlpha: 1, y: 0, duration: 1 }, "-=0.8");
 
     gsap.to(imgElement, {
-      y: "-10%",
+      yPercent: -10,
       scrollTrigger: {
         trigger: piece,
         start: "top bottom",
@@ -3208,7 +3300,7 @@ function initGallery() {
     });
 
     if (canHover && img[0] && imgElement[0]) {
-      applyHoverParallax(img[0], img[0], 1);
+      applyHoverParallax(img[0], imgElement[0], galleryImageScale);
     }
   });
 
@@ -3354,18 +3446,7 @@ function startMotionLoader() {
 
 window.addEventListener("load", () => {
   loadBrandFonts();
-
-  let motionStarted = false;
-  const startOnce = () => {
-    if (motionStarted) return;
-    motionStarted = true;
-    startMotionLoader();
-  };
-
-  window.addEventListener("scroll", startOnce, { once: true, passive: true });
-  window.addEventListener("pointerdown", startOnce, { once: true, passive: true });
-  window.addEventListener("keydown", startOnce, { once: true });
-  window.setTimeout(startOnce, 8000);
+  startMotionLoader();
 }, { once: true });
 </script>
 
